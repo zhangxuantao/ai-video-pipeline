@@ -1,0 +1,5 @@
+{
+  "start_image": ["10", "image"],
+  "positive_prompt": ["6", "text"],
+  "seed": ["3", "seed"]
+}

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>AI 视频管线</title>
+  <style>
+    body { font-family: system-ui, "Microsoft YaHei", sans-serif; max-width: 760px; margin: 24px auto; padding: 0 16px; color: #222; }
+    form { display: flex; gap: 8px; }
+    input[type=text] { flex: 1; padding: 8px; }
+    input[type=number] { width: 90px; padding: 8px; }
+    button { padding: 8px 16px; }
+    .status { margin-top: 16px; padding: 8px 12px; background: #f3f4f6; border-radius: 6px; white-space: pre-wrap; }
+    ul { padding-left: 20px; }
+    video { width: 100%; max-width: 360px; margin-top: 16px; background: #000; }
+  </style>
+</head>
+<body>
+  <h1>AI 视频管线</h1>
+  <form id="form">
+    <input id="topic" type="text" placeholder="输入主题，例如：青丘山的九尾狐" required>
+    <input id="shots" type="number" min="1" max="40" placeholder="镜头数，必填" required>
+    <button type="submit">生成</button>
+  </form>
+  <div id="message" class="status">输入主题后点击生成，页面会自动刷新进度。</div>
+  <ul id="shot-list"></ul>
+  <video id="player" controls hidden></video>
+  <script>
+    const form = document.getElementById('form');
+    const message = document.getElementById('message');
+    const shots = document.getElementById('shot-list');
+    const player = document.getElementById('player');
+    let timer = null;
+
+    async function submit(event) {
+      event.preventDefault();
+      const shotCount = Number(document.getElementById('shots').value) || 0;
+      const response = await fetch('/api/episodes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ topic: document.getElementById('topic').value, shot_count: shotCount }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        message.textContent = data.detail;
+        return;
+      }
+      player.hidden = true;
+      clearInterval(timer);
+      timer = setInterval(() => refresh(data.episode_id), 2000);
+      await refresh(data.episode_id);
+    }
+
+    async function refresh(episodeId) {
+      const response = await fetch('/api/episodes/' + episodeId);
+      if (!response.ok) {
+        clearInterval(timer);
+        message.textContent = '查询失败：' + response.status;
+        return;
+      }
+      const data = await response.json();
+      message.textContent = '状态：' + data.status + (data.error ? '\n' + data.error : '');
+      shots.replaceChildren(...data.shots.map((shot) => {
+        const item = document.createElement('li');
+        item.textContent = '第 ' + shot.shot_no + ' 镜：' + shot.status + (shot.error ? '（' + shot.error + '）' : '');
+        return item;
+      }));
+      if (data.status === 'done' || data.status === 'failed') {
+        clearInterval(timer);
+        if (data.status === 'done') {
+          player.src = '/api/episodes/' + episodeId + '/video';
+          player.hidden = false;
+        }
+      }
+    }
+
+    form.addEventListener('submit', submit);
+  </script>
+</body>
+</html>

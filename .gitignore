@@ -221,3 +221,20 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# 本项目：模型权重、素材、成片、本地数据一律不进仓库
+data/
+models/
+*.safetensors
+*.ckpt
+*.gguf
+*.onnx
+*.pth
+*.mp4
+*.webm
+*.mov
+*.wav
+*.m4a
+
+# IDE 配置
+.idea/

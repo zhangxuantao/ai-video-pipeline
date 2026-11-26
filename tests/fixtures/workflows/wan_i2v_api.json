@@ -1,0 +1,8 @@
+{
+  "3": {"class_type": "KSampler", "inputs": {"seed": 0, "steps": 20}},
+  "5": {"class_type": "EmptyHunyuanLatentVideo", "inputs": {"width": 1280, "height": 720, "length": 81, "batch_size": 1}},
+  "6": {"class_type": "CLIPTextEncode", "inputs": {"text": ""}},
+  "7": {"class_type": "CLIPTextEncode", "inputs": {"text": ""}},
+  "10": {"class_type": "LoadImage", "inputs": {"image": "example.png"}},
+  "11": {"class_type": "SaveVideo", "inputs": {"filename_prefix": "wanvideo"}}
+}

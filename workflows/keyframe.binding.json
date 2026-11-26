@@ -1,0 +1,6 @@
+{
+  "positive_prompt": ["6", "text"],
+  "seed": ["3", "seed"],
+  "width": ["5", "width"],
+  "height": ["5", "height"]
+}

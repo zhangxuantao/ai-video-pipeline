@@ -1,0 +1,4 @@
+{
+  "start_image": ["1", "image"],
+  "positive_prompt": ["2", "prompt"]
+}

@@ -1,0 +1,5 @@
+{
+  "start_image": ["114", "image"],
+  "positive_prompt": ["105:104", "prompt"],
+  "seed": ["105:15", "noise_seed"]
+}
